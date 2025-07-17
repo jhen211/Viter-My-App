@@ -11,9 +11,7 @@ const CardTestimonials = ({ image, alt, description, name, position }) => {
             alt={alt}
             className="w-20 h-20 rounded-full mx-auto mb-4 object-cover"
           />
-          <p className="text-gray-600 italic mb-4">
-            {description}
-          </p>
+          <p className="text-gray-600 italic mb-4">{description}</p>
           <h4 className="font-bold">{name}</h4>
           <p className="text-gray-500 text-sm">{position}</p>
         </div>
