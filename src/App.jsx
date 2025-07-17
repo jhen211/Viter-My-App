@@ -1,13 +1,11 @@
-import Home from "./components/pages/home/Home"
+import Home from "./components/pages/website/home/Home";
 
 function App() {
-  
-
   return (
     <>
-    <Home />
+      <Home />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

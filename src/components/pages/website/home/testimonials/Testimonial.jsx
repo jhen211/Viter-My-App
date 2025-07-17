@@ -1,6 +1,6 @@
 import React from "react";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
-import CardTestimonials from "../../../partials/CardTestimonials";
+import CardTestimonials from "../../../../partials/CardTestimonials";
 
 const Testimonial = () => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
