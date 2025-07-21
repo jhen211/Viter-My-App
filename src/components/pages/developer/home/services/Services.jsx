@@ -1,7 +1,20 @@
 import React from "react";
 import CardServices from "../../../../partials/CardServices";
+import useQueryData from "../../../../custom-hooks/useQueryData";
+import { apiVersion } from "../../../../helpers/function-general";
 
 const Services = () => {
+  const {
+    isLoading,
+    isFetching,
+    error,
+    data: dataServices,
+  } = useQueryData(
+    `${apiVersion}/controllers/developer/web-services/web-services.php`,
+    "get",
+    "web-services"
+  );
+
   return (
     <>
       <section id="services" className="bg-gray-50 py-12 md:py-20">
@@ -12,9 +25,16 @@ const Services = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-            {/* 1st card */}
+            {dataServices?.data.map((item, key) => {
+              return (
+                <React.Fragment key={key}>
+                  <CardServices item={item} />
+                </React.Fragment>
+              );
+            })}
 
-            <CardServices
+            {/* 1st card */}
+            {/* <CardServices
               image={"../images/card-icon-web-development.webp"}
               alt={"Web Development Image"}
               title={"Web Development"}
@@ -22,9 +42,9 @@ const Services = () => {
                 " Custom websites built with modern frameworks like Next.js and  React for optimal performance."
               }
               btn={"View Packages"}
-            />
+            /> */}
             {/* 2nd card */}
-            <CardServices
+            {/* <CardServices
               image={"../images/card-icon-ui-ux-design.webp"}
               alt={"UI/UX Design Image"}
               title={"UI/UX Design"}
@@ -32,10 +52,10 @@ const Services = () => {
                 " Beautiful interfaces designed to convert visitors with strategic  user experience flows."
               }
               btn={"See Portfolio"}
-            />
+            /> */}
 
             {/* 3rd card */}
-            <CardServices
+            {/* <CardServices
               image={"../images/card-icon-seo-optimization.webp"}
               alt={"SEO Optimization Image"}
               title={"SEO Optimization"}
@@ -43,7 +63,7 @@ const Services = () => {
                 "Increase your visibility on search engines with our data-driven SEO strategies."
               }
               btn={"Get Audit"}
-            />
+            /> */}
           </div>
         </div>
       </section>
