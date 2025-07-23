@@ -2,6 +2,7 @@ import React from "react";
 import CardServices from "../../../../partials/CardServices";
 
 const Services = () => {
+ 
   return (
     <>
       <section id="services" className="bg-gray-50 py-12 md:py-20">

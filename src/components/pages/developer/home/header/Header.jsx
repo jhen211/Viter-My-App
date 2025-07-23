@@ -100,6 +100,7 @@ const Header = () => {
           </a>
         </div>
       )}
+      {isModalHeader && <ModalAddHeader setIsModal={setIsModalHeader} />}
     </header>
   );
 };
