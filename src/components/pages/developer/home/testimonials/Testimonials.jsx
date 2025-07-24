@@ -1,16 +1,51 @@
 import React from "react";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 import CardTestimonials from "../../../../partials/CardTestimonials";
+import { FaPlus } from "react-icons/fa";
+import ModalAddTestimonials from "./ModalAddTestimonials";
+import useQueryData from "../../../../custom-hooks/useQueryData";
+import { apiVersion } from "../../../../helpers/function-general";
 
-const Testimonial = () => {
+const Testimonials = () => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [isModalTestimonials, setIsModalTestimonials] = React.useState(false);
+
+  const {
+    isLoading,
+    isFetching,
+    error,
+    data: dataServices,
+  } = useQueryData(
+    `${apiVersion}/controllers/developer/testimonials/Testimonials.php`,
+    "get",
+    ""
+  );
+
+  const handleAdd = () => {
+    setIsModalTestimonials(true);
+  };
+
   return (
     <>
-      <section id="testimonials" className="py-16 bg-gray-50">
+      <Testimonials id="testimonials" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Client Testimonials
-          </h2>
+          <div className="relative w-full">
+            <div className="text-center mb-12">
+              <h2 className="title">Client Testimonials</h2>
+            </div>
+            <div className="absolute right-0 top-1/3">
+              <div className="flex items-center gap-x-3">
+                <button
+                  className="flex items-center gap-2 hover:underline hover:text-primary"
+                  type="button"
+                  onClick={handleAdd}
+                >
+                  <FaPlus className="size-3" />
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
 
           {/* Testimonial Slider */}
           <div className="relative max-w-4xl mx-auto">
@@ -87,9 +122,12 @@ const Testimonial = () => {
             </div>
           </div>
         </div>
-      </section>
+        {isModalTestimonials && (
+          <ModalAddTestimonials setIsModal={setIsModalTestimonials} />
+        )}
+      </Testimonials>
     </>
   );
 };
 
-export default Testimonial;
+export default Testimonials;

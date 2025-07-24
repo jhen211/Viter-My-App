@@ -3,7 +3,7 @@ import React from "react";
 const CardServices = ({ item }) => {
   return (
     <>
-      <div id={item.web_services_aid} className="card">
+      <div id={item.web_services} className="card">
         <img src={item.web_services_image} alt={item.web_services_item} />
         <h3>{item.web_services_name}</h3>
         <p>{item.web_services_description}</p>

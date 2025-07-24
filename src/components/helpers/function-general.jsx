@@ -1,6 +1,7 @@
 // access the rest folder
 export const devApiUrl = "http://localhost/react-vite/viter-my-app/rest";
-
+// devApiUrl - hanggang rest
+// http://localhost = C:\xampp\htdocs\
 // public folder
 export const devBaseUrl = "http://localhost/react-vite/viter-my-app";
 export const apiVersion = "/v1";

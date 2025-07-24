@@ -5,7 +5,7 @@ import Header from "./header/Header";
 import Banner from "./banner/Banner";
 import About from "./about/About";
 import Services from "./services/Services";
-import Testimonial from "./testimonials/Testimonial";
+import Testimonial from "./testimonials/Testimonials";
 import Contact from "./contact/Contact";
 import Footer from "./footer/Footer";
 

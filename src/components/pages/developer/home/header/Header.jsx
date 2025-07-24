@@ -1,7 +1,14 @@
-import { useState } from "react";
+import React from "react";
+import { HiPencil } from "react-icons/hi";
+import ModalAddHeader from "./ModalAddHeader";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isModalHeader, setIsModalHeader] = React.useState(false);
+
+  const handleAdd = () => {
+    setIsModalHeader(true);
+  };
 
   return (
     <header id="header" className="bg-white relative shadow-md w-full">
@@ -13,8 +20,12 @@ const Header = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-6">
-          <a href="#" className="hover:text-blue-500">
+        <nav className="hidden md:flex space-x-6 items-center">
+          <a
+            href="#"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="hover:text-blue-500"
+          >
             Home
           </a>
           <a href="#about" className="hover:text-blue-500">
@@ -26,6 +37,15 @@ const Header = () => {
           <a href="#contact" className="hover:text-blue-500">
             Contact
           </a>
+          <button
+            className="tooltip"
+            data-tooltip="Edit"
+            type="button"
+            // onClick={() => handleAdd (data,values)} other syntax
+            onClick={handleAdd}
+          >
+            <HiPencil className="bg-primary text-white size-6 p-1 border transition-all ease-in-out duration-200 rounded-full" />
+          </button>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -75,7 +95,6 @@ const Header = () => {
           >
             Home
           </a>
-
           <a
             onClick={() => setIsMenuOpen(false)}
             href="#about"
@@ -83,7 +102,6 @@ const Header = () => {
           >
             About
           </a>
-
           <a
             onClick={() => setIsMenuOpen(false)}
             href="#services"
