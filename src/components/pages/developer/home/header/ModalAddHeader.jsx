@@ -8,18 +8,26 @@ import { queryData } from "../../../../custom-hooks/queryData";
 import * as Yup from "yup";
 import { apiVersion } from "../../../../helpers/function-general";
 
-const ModalAddHeader = ({ setIsModal }) => {
+const ModalAddHeader = ({ setIsModal, itemEdit }) => {
   const [animate, setAnimate] = React.useState("translate-x-full");
-
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (values) =>
       queryData(
-        `${apiVersion}/controllers/developer/header/header.php`,
-        "post",
+        itemEdit
+          ? `${apiVersion}/controllers/developer/header/header.php?id=${itemEdit.header_aid}`
+          : `${apiVersion}/controllers/developer/header/header.php`,
+        itemEdit
+          ? "put" //UPDATE
+          : "post", //CREATE
+
         values
       ),
     onSuccess: (data) => {
+      //validate reading
+      queryClient.invalidateQueries({ queryKey: ["header"] }); // give id for refetching data.
+
       if (data.success) {
         alert("successfully Created.");
       } else {
@@ -28,7 +36,10 @@ const ModalAddHeader = ({ setIsModal }) => {
     },
   });
 
-  const initVal = { header_name: "", header_link: "" };
+  const initVal = {
+    header_name: itemEdit ? itemEdit.header_name : "",
+    header_link: itemEdit ? itemEdit.header_link : "",
+  };
   const yupSchema = Yup.object({
     header_name: Yup.string().required("required"),
     header_link: Yup.string().required("required"),
@@ -47,9 +58,9 @@ const ModalAddHeader = ({ setIsModal }) => {
   }, []);
 
   return (
-    <ModalWrapper className={animate} handleClose={handleClose}>
+    <ModalWrapper className={`${animate}`} handleClose={handleClose}>
       <div className="modal_header relative mb-4">
-        <h3 className="text-sm">Add header</h3>
+        <h3 className="text-sm">{itemEdit ? "Edit" : "Add"} Header</h3>
         <button
           type="button"
           className="absolute top-0.5 right-0"
@@ -63,9 +74,8 @@ const ModalAddHeader = ({ setIsModal }) => {
           initialValues={initVal}
           validationSchema={yupSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
-            console.log(values);
-
             mutation.mutate(values);
+            console.log(values);
           }}
         >
           {(props) => {
@@ -83,7 +93,11 @@ const ModalAddHeader = ({ setIsModal }) => {
                 {/* ACTIONS */}
                 <div className="modal_action flex justify-end absolute w-full bottom-0 mt-6 mb-4 gap-2 left-0 px-6">
                   <button type="submit" className="btn-modal-submit">
-                    {mutation.isPending ? "Loading..." : "Add"}
+                    {mutation.isPending
+                      ? "Loading..."
+                      : itemEdit
+                      ? "Save"
+                      : "Add"}
                   </button>
                   <button
                     type="reset"

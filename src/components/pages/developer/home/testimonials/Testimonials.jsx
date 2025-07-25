@@ -14,9 +14,9 @@ const Testimonials = () => {
     isLoading,
     isFetching,
     error,
-    data: dataServices,
+    data: dataTestimonials,
   } = useQueryData(
-    `${apiVersion}/controllers/developer/testimonials/Testimonials.php`,
+    `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
     "get",
     ""
   );
@@ -27,7 +27,7 @@ const Testimonials = () => {
 
   return (
     <>
-      <Testimonials id="testimonials" className="py-16 bg-gray-50">
+      <section id="testimonials" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="relative w-full">
             <div className="text-center mb-12">
@@ -55,8 +55,15 @@ const Testimonials = () => {
                 className="flex transition-transform duration-300 ease-in-out "
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
+                {dataTestimonials?.data.map((item, key) => {
+                  return (
+                    <CardTestimonials
+                    item={item} key={key}
+                    />
+                  );
+                })}
                 {/*  1st */}
-                <CardTestimonials
+                {/* <CardTestimonials
                   image={"./images/testimonials-1.webp"}
                   alt={"Sarah JOhnson"}
                   description={
@@ -64,10 +71,10 @@ const Testimonials = () => {
                   }
                   name={"Sarah Johnson"}
                   position={"Marketing Director, TechCorp"}
-                />
+                /> */}
 
                 {/* 2nd */}
-                <CardTestimonials
+                {/* <CardTestimonials
                   image={"../images/testimonials-2.webp"}
                   alt={"Michael Chen Image"}
                   description={
@@ -75,10 +82,10 @@ const Testimonials = () => {
                   }
                   name={"Michael Chen"}
                   position={"CEO, StartupHub"}
-                />
+                /> */}
 
                 {/* 3rd */}
-                <CardTestimonials
+                {/* <CardTestimonials
                   image={"../images/testimonials-3.webp"}
                   alt={"Emma Rodriguez Image"}
                   description={
@@ -86,7 +93,7 @@ const Testimonials = () => {
                   }
                   name={"Emma Rodriguez"}
                   position={"CMO, Growth Solutions"}
-                />
+                /> */}
               </div>
             </div>
 
@@ -125,7 +132,7 @@ const Testimonials = () => {
         {isModalTestimonials && (
           <ModalAddTestimonials setIsModal={setIsModalTestimonials} />
         )}
-      </Testimonials>
+      </section>
     </>
   );
 };

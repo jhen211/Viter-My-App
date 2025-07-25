@@ -1,9 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
+import React from "react";
+import ModalWrapper from "../../../../partials/modal/ModalWrapper";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryData } from "../../../../custom-hooks/queryData";
 import { apiVersion } from "../../../../helpers/function-general";
 import { Form, Formik } from "formik";
 import { InputText, InputTextArea } from "../../../../helpers/FormInputs";
 import { FaTimes } from "react-icons/fa";
+import * as Yup from "yup";
 
 const ModalAddTestimonials = ({ setIsModal }) => {
   const [animate, setAnimate] = React.useState("translate-x-full");
@@ -12,7 +15,7 @@ const ModalAddTestimonials = ({ setIsModal }) => {
   const mutation = useMutation({
     mutationFn: (values) =>
       queryData(
-        `${apiVersion}controllers/developer/testimonials/Testimonials.php`,
+        `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
         "post",
         values
       ),
@@ -44,7 +47,7 @@ const ModalAddTestimonials = ({ setIsModal }) => {
   };
 
   const yupSchema = Yup.object({
-    web_services_name: Yup.string().required("required"),
+    testimonials_name: Yup.string().required("required"),
   });
   //UPON USING THIS MODAL AND ALL ELEMENT TAG ARE RENDERED, RUN THIS CODE
   React.useEffect(() => {
@@ -54,7 +57,7 @@ const ModalAddTestimonials = ({ setIsModal }) => {
   return (
     <ModalWrapper className={`${animate}`} handleClose={handleClose}>
       <div className="modal_header relative mb-4">
-        <h3 className="text-sm">Add Services</h3>
+        <h3 className="text-sm">Add Testimonial</h3>
         <button
           type="button"
           className="absolute top-0.5 right-0"
@@ -75,6 +78,14 @@ const ModalAddTestimonials = ({ setIsModal }) => {
           {(props) => {
             return (
               <Form>
+                <div className="relative mt-5">
+                  <InputText
+                    label="Image"
+                    name="testimonials_image"
+                    type="text"
+                    disabled={mutation.isPending}
+                  />
+                </div>
                 <div className="modal-overflow ">
                   <div className="relative mt-3">
                     <InputText
@@ -84,7 +95,7 @@ const ModalAddTestimonials = ({ setIsModal }) => {
                       disabled={mutation.isPending}
                     />
                   </div>
-                  <div className="relative mt-3">
+                  <div className="relative mt-5 mb-5">
                     <InputTextArea
                       label="Position"
                       name="testimonials_position"
@@ -92,7 +103,7 @@ const ModalAddTestimonials = ({ setIsModal }) => {
                       disabled={mutation.isPending}
                     />
                   </div>
-                  <div className="relative mt-3">
+                  <div className="relative mt-5">
                     <InputText
                       label="Comment"
                       name="testimonials_comment"

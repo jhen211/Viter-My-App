@@ -21,19 +21,19 @@ class Header
         $this->tblHeader = "my_app_header"; // table
     }
 
-    // public function readAll()
-    // {
-    //     try {
-    //         $sql = "select ";
-    //         $sql .= "* ";
-    //         $sql .= "from ";
-    //         $sql .= "{$this->tblHeader} ";
-    //         $query = $this->connection->query($sql);
-    //     } catch (PDOException $ex) {
-    //         $query = false;
-    //     }
-    //     return $query;
-    // }
+    public function readAll()
+    {
+        try {
+            $sql = "select ";
+            $sql .= "* ";
+            $sql .= "from ";
+            $sql .= "{$this->tblHeader} ";
+            $query = $this->connection->query($sql);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
 
 
     // creating a data using this function
@@ -63,6 +63,29 @@ class Header
         } catch (PDOException $ex) {
             returnError($ex);
 
+            $query = false;
+        }
+        return $query;
+    }
+
+    // UPDATE
+
+    public function update()
+    {
+        try {
+            $sql = "update {$this->tblHeader} set ";
+            $sql .= "header_name = :header_name, ";
+            $sql .= "header_link = :header_link, ";
+            $sql .= "header_updated = :header_updated ";
+            $sql .= "where header_aid = :header_aid ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "header_name" => $this->header_name,
+                "header_link" => $this->header_link,
+                "header_updated" => $this->header_updated,
+                "header_aid" => $this->header_aid,
+            ]);
+        } catch (PDOException $ex) {
             $query = false;
         }
         return $query;

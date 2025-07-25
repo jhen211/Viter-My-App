@@ -5,6 +5,7 @@ class Testimonials
     public $testimonials_aid; // column -no need to put, automatic generated
     public $testimonials_is_active; // column
     public $testimonials_name; // column
+    public $testimonials_image; // column
     public $testimonials_position; // column
     public $testimonials_comment; // column
     public $testimonials_created; // column
@@ -22,19 +23,19 @@ class Testimonials
         $this->tblTestimonials = "my_app_testimonials"; // table
     }
 
-    // public function readAll()
-    // {
-    //     try {
-    //         $sql = "select ";
-    //         $sql .= "* ";
-    //         $sql .= "from ";
-    //         $sql .= "{$this->tblHeader} ";
-    //         $query = $this->connection->query($sql);
-    //     } catch (PDOException $ex) {
-    //         $query = false;
-    //     }
-    //     return $query;
-    // }
+    public function readAll()
+    {
+        try {
+            $sql = "select ";
+            $sql .= "* ";
+            $sql .= "from ";
+            $sql .= "{$this->tblTestimonials} ";
+            $query = $this->connection->query($sql);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
 
 
     // creating a data using this function
@@ -45,20 +46,24 @@ class Testimonials
             $sql .= "testimonials_is_active, ";
             $sql .= "testimonials_name, ";
             $sql .= "testimonials_position, ";
+            $sql .= "testimonials_image, ";
             $sql .= "testimonials_comment, ";
             $sql .= "testimonials_created, ";
             $sql .= "testimonials_updated ) values ( ";
             $sql .= ":testimonials_is_active, "; // NEEDED COLUMN IF IT NEED TO PASS
             $sql .= ":testimonials_name, ";
-            $sql .= "testimonials_position, ";
-            $sql .= "testimonials_comment, ";
+            $sql .= ":testimonials_position, ";
+            $sql .= ":testimonials_image, ";
+            $sql .= ":testimonials_comment, ";
             $sql .= ":testimonials_created, ";
             $sql .= ":testimonials_updated ) ";
+            returnError($sql);
             $query = $this->connection->prepare($sql); // TO READY YOUR QUERY
             $query->execute([ // TO RUN THIS SQL CODE // ARRAY-[]
                 "testimonials_is_active" => $this->testimonials_is_active, // => - EQUAL GREATER THAN
                 "testimonials_name" => $this->testimonials_name,
                 "testimonials_position" => $this->testimonials_position,
+                "testimonials_image" => $this->testimonials_image,
                 "testimonials_comment" => $this->testimonials_comment,
                 "testimonials_created" => $this->testimonials_created,
                 "testimonials_updated" => $this->testimonials_updated,

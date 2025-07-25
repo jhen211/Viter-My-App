@@ -9,12 +9,12 @@ import Testimonial from "./testimonials/Testimonial";
 
 const Home = () => {
   return (
-    <>
+    <> 
       <div className="page-container">
         <div className="content-wrap">
           <Header />
           <Banner />
-          <Services />
+          {/* <Services /> */}
           <About />
           <Testimonial />
           <Contact />

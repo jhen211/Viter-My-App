@@ -1,12 +1,33 @@
 import React from "react";
 import { HiPencil } from "react-icons/hi";
 import ModalAddHeader from "./ModalAddHeader";
+import useQueryData from "../../../../custom-hooks/useQueryData";
+import { apiVersion } from "../../../../helpers/function-general";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isModalHeader, setIsModalHeader] = React.useState(false);
+  const [itemEdit, setItemEdit] = React.useState();
+
+  const {
+    isLoading,
+    isFetching,
+    error,
+    data: dataHeader,
+  } = useQueryData(
+    `${apiVersion}/controllers/developer/header/header.php`,
+    "get",
+    "header"
+  );
 
   const handleAdd = () => {
+    setItemEdit(null);
+    setIsModalHeader(true);
+  };
+
+  const handleEdit = (item) => {
+    setItemEdit(item);
+    // console.log(item);
     setIsModalHeader(true);
   };
 
@@ -21,22 +42,54 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6 items-center">
-          <a
-            href="#"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="hover:text-blue-500"
+          {dataHeader?.data.map((item, key) => {
+            return (
+              <a
+                onClick={() => handleEdit(item)}
+                href={item.header_link}
+                className="block py-2 hover:text-blue-500"
+              >
+                {item.header_name}
+              </a>
+            );
+          })}
+
+          {/* <button
+            type="button"
+            data-tooltip="Edit"
+            onClick={handleAdd}
+            className="hover:text-blue-500 tooltip"
           >
             Home
-          </a>
-          <a href="#about" className="hover:text-blue-500">
+          </button>
+
+          <button
+            type="button"
+            data-tooltip="Edit"
+            className="hover:text-blue-500 tooltip"
+            onClick={handleAdd}
+          >
             About
-          </a>
-          <a href="#services" className="hover:text-blue-500">
+          </button>
+
+          <button
+            type="button"
+            data-tooltip="Edit"
+            className="hover:text-blue-500 tooltip"
+            onClick={handleAdd}
+          >
             Services
-          </a>
-          <a href="#contact" className="hover:text-blue-500">
+          </button>
+
+          <button
+            type="button"
+            data-tooltip="Edit"
+            className="hover:text-blue-500 tooltip"
+            onClick={handleAdd}
+          >
             Contact
-          </a>
+          </button> */}
+
           <button
             className="tooltip"
             data-tooltip="Edit"
@@ -118,7 +171,9 @@ const Header = () => {
           </a>
         </div>
       )}
-      {isModalHeader && <ModalAddHeader setIsModal={setIsModalHeader} />}
+      {isModalHeader && (
+        <ModalAddHeader setIsModal={setIsModalHeader} itemEdit={itemEdit} />
+      )}
     </header>
   );
 };
