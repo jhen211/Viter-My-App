@@ -1,14 +1,23 @@
 import React from "react";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 import CardTestimonials from "../../../../partials/CardTestimonials";
-import { FaPlus } from "react-icons/fa";
+import { FaList, FaPlus, FaTable, FaTrash } from "react-icons/fa";
 import ModalAddTestimonials from "./ModalAddTestimonials";
 import useQueryData from "../../../../custom-hooks/useQueryData";
+
+import { FaPencil } from "react-icons/fa6";
+import ModalDeleteTestimonials from "./ModalDeleteTestimonials";
+import TestimonialsList from "./TestimonialsList";
+import TestimonialsTable from "./TestimonialsTable";
 import { apiVersion } from "../../../../helpers/function-general";
 
 const Testimonials = () => {
-  const [currentSlide, setCurrentSlide] = React.useState(0);
   const [isModalTestimonials, setIsModalTestimonials] = React.useState(false);
+  const [isDeleteTestimonials, setIsDeleteTestimonials] = React.useState(false);
+  const [itemEdit, setItemEdit] = React.useState();
+  const [isTable, setIsTable] = React.useState(false);
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [item, setItem] = React.useState();
 
   const {
     isLoading,
@@ -18,11 +27,28 @@ const Testimonials = () => {
   } = useQueryData(
     `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
     "get",
-    ""
+    "testimonials"
   );
+
+  console.log(isTable);
+
+  const handleToggleTable = () => {
+    setIsTable(!isTable);
+  };
 
   const handleAdd = () => {
     setIsModalTestimonials(true);
+  };
+
+  const handleEdit = (item) => {
+    setItemEdit(item);
+    // console.log(item);
+    setIsModalTestimonials(true);
+  };
+
+  const handleDelete = (item) => {
+    setItemEdit(item);
+    setIsDeleteTestimonials(true);
   };
 
   return (
@@ -35,6 +61,24 @@ const Testimonials = () => {
             </div>
             <div className="absolute right-0 top-1/3">
               <div className="flex items-center gap-x-3">
+                {/* UI */}
+                <button
+                  className="flex items-center gap-2 hover:underline hover:text-primary"
+                  type="button"
+                  onClick={handleToggleTable} //step 2 in update
+                >
+                  {isTable == true ? (
+                    <>
+                      <FaList className="size-3" />
+                      List
+                    </>
+                  ) : (
+                    <>
+                      <FaTable className="size-3" />
+                      Table
+                    </>
+                  )}
+                </button>
                 <button
                   className="flex items-center gap-2 hover:underline hover:text-primary"
                   type="button"
@@ -47,6 +91,31 @@ const Testimonials = () => {
             </div>
           </div>
 
+          {/* DELETE */}
+          {isTable == true ? (
+            <>
+              <TestimonialsTable
+                isLoading={isLoading}
+                isFetching={isFetching}
+                error={error}
+                dataTestimonials={dataTestimonials}
+                handleAdd={handleAdd}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
+            </>
+          ) : (
+            <TestimonialsList
+              isLoading={isLoading}
+              isFetching={isFetching}
+              error={error}
+              dataTestimonials={dataTestimonials}
+              handleAdd={handleAdd}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+          )}
+
           {/* Testimonial Slider */}
           <div className="relative max-w-4xl mx-auto">
             {/* slides */}
@@ -56,12 +125,26 @@ const Testimonials = () => {
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
                 {dataTestimonials?.data.map((item, key) => {
-                  return (
-                    <CardTestimonials
-                    item={item} key={key}
-                    />
-                  );
+                  return <CardTestimonials item={item} key={key} />;
                 })}
+                <div className="absolute top-5 right-5 ">
+                  <button // 1ST STEP
+                    type="button"
+                    data-tooltip="Edit"
+                    className="tooltip text-white"
+                    onClick={() => handleEdit(item)}
+                  >
+                    <FaPencil className="p-1 bg-primary rounded-full" />
+                  </button>
+                  <button // 1ST STEP
+                    type="button"
+                    data-tooltip="Delete"
+                    className="tooltip text-red-600"
+                    onClick={() => handleDelete(item)}
+                  >
+                    <FaTrash className="p-1 bg-primary rounded-full" />
+                  </button>
+                </div>
                 {/*  1st */}
                 {/* <CardTestimonials
                   image={"./images/testimonials-1.webp"}
@@ -100,7 +183,7 @@ const Testimonials = () => {
             {/* Navigation Arrows */}
             <button
               onClick={() =>
-                setCurrentSlide((prev) => (prev === 0 ? 2 : prev - 1))
+                setCurrentSlide((prev) => (prev === 0 ? 5 : prev - 1))
               }
               className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
             >
@@ -108,7 +191,7 @@ const Testimonials = () => {
             </button>
             <button
               onClick={() =>
-                setCurrentSlide((prev) => (prev === 2 ? 0 : prev + 1))
+                setCurrentSlide((prev) => (prev === 5 ? 0 : prev + 1))
               }
               className="absolute right-0 top-1/2 -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
             >
@@ -130,7 +213,18 @@ const Testimonials = () => {
           </div>
         </div>
         {isModalTestimonials && (
-          <ModalAddTestimonials setIsModal={setIsModalTestimonials} />
+          <ModalAddTestimonials
+            setIsModal={setIsModalTestimonials}
+            itemEdit={itemEdit}
+          />
+        )}
+        {/* DELETE STEP 11 -> testimonials.php */}
+        {isDeleteTestimonials && (
+          <ModalDeleteTestimonials
+            setModalDelete={setIsDeleteTestimonials}
+            mySqlEndpoint={`${apiVersion}/controllers/developer/testimonials/testimonials.php?id=${itemEdit.testimonials_aid}`}
+            queryKey="testimonials"
+          />
         )}
       </section>
     </>

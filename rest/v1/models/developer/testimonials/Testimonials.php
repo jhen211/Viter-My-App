@@ -76,4 +76,18 @@ class Testimonials
         }
         return $query;
     }
+    public function delete()
+    {
+        try {
+            $sql = "delete from {$this->tblTestimonials} ";
+            $sql .= "where testimonials_aid = :testimonials_aid";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "testimonials_aid" => $this->testimonials_aid
+            ]);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
 }

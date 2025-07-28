@@ -30,4 +30,11 @@ if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
         sendResponse($result);
         exit;
     }
+
+    //DELETE = REMOVE A ROW
+    if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+        $result = require 'delete.php';
+        sendResponse($result);
+        exit;
+    }
 }

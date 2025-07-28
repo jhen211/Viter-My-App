@@ -2,13 +2,19 @@ import React from "react";
 import CardServices from "../../../../partials/CardServices";
 import useQueryData from "../../../../custom-hooks/useQueryData";
 import { apiVersion } from "../../../../helpers/function-general";
-import { FaPlus } from "react-icons/fa";
+import { FaList, FaPlus, FaTable, FaTrash } from "react-icons/fa";
 import ModalAddServices from "./ModalAddServices";
 import { FaPencil } from "react-icons/fa6";
+import ModalDeleteServices from "./ModalDeleteServices";
+import ServicesList from "./ServicesList";
+import ServiceListTable from "./ServicesTable";
+import ServicesTable from "./ServicesTable";
 
 const Services = () => {
   const [isModalServices, setIsModalServices] = React.useState(false);
+  const [isDeleteServices, setIsDeleteServices] = React.useState(false);
   const [itemEdit, setItemEdit] = React.useState();
+  const [isTable, setIsTable] = React.useState(false);
 
   const {
     isLoading,
@@ -16,10 +22,16 @@ const Services = () => {
     error,
     data: dataServices,
   } = useQueryData(
-    `${apiVersion}/controllers/developer/web-services/web-services.php`,
-    "get",
-    "web-services"
+    `${apiVersion}/controllers/developer/web-services/web-services.php`, // endpoint
+    "get", // post
+    "web-services" // query key
   );
+
+  console.log(isTable);
+
+  const handleToggleTable = () => {
+    setIsTable(!isTable);
+  };
 
   const handleAdd = () => {
     setItemEdit(null);
@@ -30,6 +42,11 @@ const Services = () => {
     setItemEdit(item);
     // console.log(item);
     setIsModalServices(true);
+  };
+
+  const handleDelete = (item) => {
+    setItemEdit(item);
+    setIsDeleteServices(true);
   };
 
   return (
@@ -45,10 +62,28 @@ const Services = () => {
             </div>
             <div className="absolute right-0 top-1/3">
               <div className="flex items-center gap-x-3">
+                {/* UI */}
                 <button
                   className="flex items-center gap-2 hover:underline hover:text-primary"
                   type="button"
-                  onClick={handleAdd}
+                  onClick={handleToggleTable} //step 2 in update
+                >
+                  {isTable == true ? (
+                    <>
+                      <FaList className="size-3" />
+                      List
+                    </>
+                  ) : (
+                    <>
+                      <FaTable className="size-3" />
+                      Table
+                    </>
+                  )}
+                </button>
+                <button
+                  className="flex items-center gap-2 hover:underline hover:text-primary"
+                  type="button"
+                  onClick={handleAdd} //step 2 in update
                 >
                   <FaPlus className="size-3" />
                   Add
@@ -57,62 +92,42 @@ const Services = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-            {dataServices?.data.map((item, key) => {
-              return (
-                <div key={key} className="relative">
-                  <div className="absolute top-5 right-3">
-                    <button // 1ST STEP
-                      type="button"
-                      data-tooltip="Edit"
-                      className="tooltip text-white"
-                      onClick={() => handleEdit(item)}
-                    >
-                      <FaPencil className="p-1 bg-primary rounded-full" />
-                    </button> 
-                  </div>
-                  <CardServices item={item} />
-                </div>
-              );
-            })}
-
-            {/* 1st card */}
-            {/* <CardServices
-              image={"../images/card-icon-web-development.webp"}
-              alt={"Web Development Image"}
-              title={"Web Development"}
-              description={
-                " Custom websites built with modern frameworks like Next.js and  React for optimal performance."
-              }
-              btn={"View Packages"}
-            /> */}
-            {/* 2nd card */}
-            {/* <CardServices
-              image={"../images/card-icon-ui-ux-design.webp"}
-              alt={"UI/UX Design Image"}
-              title={"UI/UX Design"}
-              description={
-                "Beautiful interfaces designed to convert visitors with strategic  user experience flows."
-              }
-              btn={"See Portfolio"}
-            /> */}
-
-            {/* 3rd card */}
-            {/* <CardServices
-              image={"../images/card-icon-seo-optimization.webp"}
-              alt={"SEO Optimization Image"}
-              title={"SEO Optimization"}
-              description={
-                "Increase your visibility on search engines with our data-driven SEO strategies."
-              }
-              btn={"Get Audit"}
-            /> */}
-          </div>
+          {/* DELETE */}
+          {isTable == true ? (
+            <>
+              <ServicesTable
+                isLoading={isLoading}
+                isFetching={isFetching}
+                error={error}
+                dataServices={dataServices}
+                handleAdd={handleAdd}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
+            </>
+          ) : (
+            <ServicesList
+              isLoading={isLoading}
+              isFetching={isFetching}
+              error={error}
+              dataServices={dataServices}
+              handleAdd={handleAdd}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+          )}
         </div>
       </section>
 
       {isModalServices && (
         <ModalAddServices setIsModal={setIsModalServices} itemEdit={itemEdit} />
+      )}
+      {isDeleteServices && (
+        <ModalDeleteServices
+          setIsModalDelete={setIsDeleteServices}
+          mySqlEndpoint={`${apiVersion}/controllers/developer/web-services/web-services.php?id=${itemEdit.web_services_aid}`}
+          queryKey="web-services" //step 4 - pass item to delete
+        />
       )}
     </>
   );

@@ -54,6 +54,31 @@ function getQueriedData($query)
     exit;
 }
 
+function checkId($id)
+{
+    $response = new Response();
+    if ($id == '' || !is_numeric($id)) {
+        $response->setSuccess(false);
+        $error = [];
+        $error['code'] = '400';
+        $error['error'] = 'ID cannot be blank or must be numeric';
+        $error['success'] = false;
+        $response->setData($error);
+        $response->send();
+        exit;
+    }
+} 
+
+
+
+function checkDelete($model)
+{
+    $query = $model->delete();
+    checkQuery($query, "There's something wrong with models. (delete)");
+    return $query;
+}
+
+
 function checkQuery($query, $msg)
 {
     // IF QUERY IS FALSE THEN DO THIS CODE

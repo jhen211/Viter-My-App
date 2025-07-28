@@ -69,9 +69,8 @@ class WebServices
                 "web_services_updated" => $this->web_services_updated,
             ]);
             $this->lastInsertedId = $this->connection->lastInsertId();
-        } catch (Exception $ex) {
+        } catch (PDOException $ex) {
             returnError($ex);
-
             $query = false;
         }
         return $query;
@@ -99,6 +98,21 @@ class WebServices
                 "web_services_text_url" => $this->web_services_text_url,
                 "web_services_updated" => $this->web_services_updated,
                 "web_services_aid" => $this->web_services_aid,
+            ]);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
+
+    public function delete()
+    {
+        try {
+            $sql = "delete from {$this->tblWebServices} ";
+            $sql .= "where web_services_aid = :web_services_aid";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "web_services_aid" => $this->web_services_aid
             ]);
         } catch (PDOException $ex) {
             $query = false;
