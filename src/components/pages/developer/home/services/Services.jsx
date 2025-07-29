@@ -27,8 +27,6 @@ const Services = () => {
     "web-services" // query key
   );
 
-  console.log(isTable);
-
   const handleToggleTable = () => {
     setIsTable(!isTable);
   };
@@ -40,7 +38,6 @@ const Services = () => {
 
   const handleEdit = (item) => {
     setItemEdit(item);
-    // console.log(item);
     setIsModalServices(true);
   };
 

@@ -1,12 +1,12 @@
 <?php
 require '../../../core/header.php';
 require '../../../core/functions.php';
-require '../../../models/developer/testimonials/Testimonials.php';
+require '../../../models/developer/contact/Contact.php';
 
 $body = file_get_contents('php://input');
-// $body->testimonials_name
+// $body->contact_fullname
 $data = json_decode($body, true);
-// $data['testimonials_name'];
+// $data['contact_fullname'];
 
 
 if (isset($_SERVER['HTTP_AUTHORIZATION'])) {

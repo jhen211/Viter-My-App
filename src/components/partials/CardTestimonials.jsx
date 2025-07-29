@@ -1,10 +1,30 @@
 import React from "react";
+import { FaTrash } from "react-icons/fa";
+import { FaPencil } from "react-icons/fa6";
 
-const CardTestimonials = ({ item }) => {
+const CardTestimonials = ({ item, handleEdit, handleDelete }) => {
   return (
     <>
       {/* Testimonial 1 */}
-      <div className="w-full flex-shrink-0 px-4">
+      <div className="w-full flex-shrink-0 px-4 relative">
+        <div className="absolute top-5 right-5 ">
+          <button // 1ST STEP
+            type="button"
+            data-tooltip="Edit"
+            className="tooltip text-white"
+            onClick={() => handleEdit(item)}
+          >
+            <FaPencil className="p-1 bg-primary rounded-full" />
+          </button>
+          <button // 1ST STEP
+            type="button"
+            data-tooltip="Delete"
+            className="tooltip text-red-600"
+            onClick={() => handleDelete(item)}
+          >
+            <FaTrash className="p-1 bg-primary rounded-full" />
+          </button>
+        </div>
         <div className="bg-white p-8 rounded-xl shadow-md text-center ">
           <img
             src={item.testimonials_image}

@@ -45,6 +45,7 @@ const Header = () => {
           {dataHeader?.data.map((item, key) => {
             return (
               <a
+                key={key}
                 onClick={() => handleEdit(item)}
                 href={item.header_link}
                 className="block py-2 hover:text-blue-500"

@@ -57,7 +57,6 @@ class Testimonials
             $sql .= ":testimonials_comment, ";
             $sql .= ":testimonials_created, ";
             $sql .= ":testimonials_updated ) ";
-            returnError($sql);
             $query = $this->connection->prepare($sql); // TO READY YOUR QUERY
             $query->execute([ // TO RUN THIS SQL CODE // ARRAY-[]
                 "testimonials_is_active" => $this->testimonials_is_active, // => - EQUAL GREATER THAN
@@ -71,7 +70,6 @@ class Testimonials
             $this->lastInsertedId = $this->connection->lastInsertId();
         } catch (PDOException $ex) {
             returnError($ex);
-
             $query = false;
         }
         return $query;
@@ -80,10 +78,34 @@ class Testimonials
     {
         try {
             $sql = "delete from {$this->tblTestimonials} ";
-            $sql .= "where testimonials_aid = :testimonials_aid";
+            $sql .= "where testimonials_aid = :testimonials_aid ";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "testimonials_aid" => $this->testimonials_aid
+            ]);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
+    public function update()
+    {
+        try {
+            $sql = "update {$this->tblTestimonials} set ";
+            $sql .= "testimonials_name = :testimonials_name, ";
+            $sql .= "testimonials_position = :testimonials_position, ";
+            $sql .= "testimonials_image = :testimonials_image, ";
+            $sql .= "testimonials_comment = :testimonials_comment, ";
+            $sql .= "testimonials_updated = :testimonials_updated ";
+            $sql .= "where testimonials_aid = :testimonials_aid ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "testimonials_name" => $this->testimonials_name,
+                "testimonials_position" => $this->testimonials_position,
+                "testimonials_image" => $this->testimonials_image,
+                "testimonials_comment" => $this->testimonials_comment,
+                "testimonials_updated" => $this->testimonials_updated,
+                "testimonials_aid" => $this->testimonials_aid,
             ]);
         } catch (PDOException $ex) {
             $query = false;

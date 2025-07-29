@@ -8,39 +8,47 @@ import { queryData } from "../../../../custom-hooks/queryData";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ModalWrapper from "../../../../partials/modal/ModalWrapper";
 
-const ModalAddTestimonials = ({ setIsModal }) => {
+const ModalAddTestimonials = ({ setIsModal, itemEdit }) => {
   const [animate, setAnimate] = React.useState("translate-x-full");
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (values) =>
       queryData(
-        `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
-        "post",
+        itemEdit
+          ? `${apiVersion}/controllers/developer/testimonials/testimonials.php?id=${itemEdit.testimonials_aid}`
+          : `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
+        itemEdit
+          ? "put" //UPDATE
+          : "post", //CREATE
         values
       ),
     onSuccess: (data) => {
-      queryClient.invalidateQueries(""); // give id for refetching data.
+      queryClient.invalidateQueries({ queryKey: ["testimonials"] }); // give id for refetching data.
 
       if (!data.success) {
         window.prompt(data.error);
       } else {
-        window.prompt(`Successfully created.`);
+        window.prompt(
+          itemEdit ? `Successfully edited.` : `Successfully created.`
+        );
         setIsModal(false);
       }
     },
   });
 
   const handleClose = () => {
+    if (mutation.isPending) return; // don't closer while query is ongoing
     setAnimate("translate-x-full"); //animate close of modal
     setTimeout(() => {
       setIsModal(false); //close upon animation exit
     }, 200);
   };
   const initVal = {
-    testimonials_image: "",
-    testimonials_name: "",
-    testimonials_position: "",
-    testimonials_comment: "",
+    testimonials_image: itemEdit ? itemEdit.testimonials_image : "",
+    testimonials_name: itemEdit ? itemEdit.testimonials_name : "",
+    testimonials_position: itemEdit ? itemEdit.testimonials_position : "",
+    testimonials_comment: itemEdit ? itemEdit.testimonials_comment : "",
   };
 
   const yupSchema = Yup.object({
@@ -52,11 +60,12 @@ const ModalAddTestimonials = ({ setIsModal }) => {
   React.useEffect(() => {
     setAnimate("");
   }, []);
+
   return (
     <>
       <ModalWrapper className={`${animate}`} handleClose={handleClose}>
         <div className="modal_header relative mb-4">
-          <h3 className="text-sm">Add Testimonial</h3>
+          <h3 className="text-sm">{itemEdit ? "Edit" : "Add"} Testimonial</h3>
           <button
             type="button"
             className="absolute top-0.5 right-0"
@@ -81,7 +90,7 @@ const ModalAddTestimonials = ({ setIsModal }) => {
                     <div className="relative mt-3">
                       <InputText
                         label="Image url"
-                        name="testimonials_images"
+                        name="testimonials_image"
                         type="text"
                         disabled={mutation.isPending}
                       />
@@ -113,7 +122,11 @@ const ModalAddTestimonials = ({ setIsModal }) => {
                   </div>
                   <div className="modal_action flex justify-end absolute w-full bottom-0 mt-6 mb-4 gap-2 left-0 px-6">
                     <button type="submit" className="btn-modal-submit">
-                      {mutation.isPending ? "Loading..." : "Add"}
+                      {mutation.isPending
+                        ? "Loading..."
+                        : itemEdit
+                        ? "Save"
+                        : "Add"}
                     </button>
                     <button
                       type="reset"

@@ -1,18 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { GrFormClose } from "react-icons/gr";
-import { MdDelete } from "react-icons/md";
 import { queryData } from "../../../../custom-hooks/queryData";
+import { MdDelete } from "react-icons/md";
+import { GrFormClose } from "react-icons/gr";
 
-const ModalDeleteTestimonials = ({
-  setModalDelete,
+const ModalDeleteContact = ({
+  setIsModalDelete,
   mySqlEndpoint,
   queryKey,
   currentSlide,
   setCurrentSlide,
 }) => {
   const handleClose = () => {
-    setModalDelete(false);
+    setIsModalDelete(false);
   };
 
   const queryClient = useQueryClient();
@@ -81,4 +81,4 @@ const ModalDeleteTestimonials = ({
   );
 };
 
-export default ModalDeleteTestimonials;
+export default ModalDeleteContact;

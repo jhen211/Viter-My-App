@@ -2,11 +2,11 @@ import React from "react";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 
-const ServicesTable = ({
+const ContactTable = ({
   isLoading,
   isFetching,
   error,
-  dataServices,
+  dataContact,
   handleAdd,
   handleEdit,
   handleDelete,
@@ -21,12 +21,12 @@ const ServicesTable = ({
           <th>Action</th>
         </thead>
         <tbody>
-          {dataServices?.data.map((item, index) => {
+          {dataContact?.data.map((item, index) => {
             return (
               <tr>
                 <td>{index + 1}</td>
-                <td>{item.web_services_name}</td>
-                <td>{item.web_services_description}</td>
+                <td>{item.contact_fullname}</td>
+                <td>{item.contact_message}</td>
                 <td>
                   <div className="flex items-center justify-end mr-5 gap-x-3">
                     <button // 1ST STEP
@@ -56,4 +56,4 @@ const ServicesTable = ({
   );
 };
 
-export default ServicesTable;
+export default ContactTable;
