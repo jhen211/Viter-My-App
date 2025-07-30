@@ -99,8 +99,8 @@ const ModalAddHeader = ({ setIsModal, itemEdit }) => {
                     {mutation.isPending
                       ? "Loading..."
                       : itemEdit
-                      ? "Save"
-                      : "Add"}
+                        ? "Save"
+                        : "Add"}
                   </button>
                   <button
                     type="reset"

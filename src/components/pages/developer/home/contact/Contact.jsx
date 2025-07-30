@@ -36,7 +36,6 @@ const Contact = () => {
 
   const handleEdit = (item) => {
     setItemEdit(item);
-    setIsModalContact(true);
   };
 
   const handleDelete = (item) => {
