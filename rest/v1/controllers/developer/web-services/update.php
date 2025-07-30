@@ -17,6 +17,11 @@ if (array_key_exists('id', $_GET)) {
     $webServices->web_services_text_url = $data['web_services_text_url'];
     $webServices->web_services_updated = date("Y-m-d H:i:s");
 
+    $web_services_name_old = $data['web_services_name_old'];
+
+
+    compareName($webServices, $web_services_name_old , $webServices->web_services_name);
+
 
     $query = checkUpdate($webServices);
     returnSuccess($webServices, 'web services update', $query);

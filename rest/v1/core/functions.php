@@ -67,7 +67,7 @@ function checkId($id)
         $response->send();
         exit;
     }
-} 
+}
 
 
 
@@ -182,6 +182,65 @@ function checkReadAll($object)
     $query = $object->readAll();
     checkQuery($query, "Theres something wrong with models.");
     return $query;
+}
+
+function checkExistence($count, $msg = '')
+{
+    if ($count > 0) {
+        $response = new Response();
+        $error = [];
+        $response->setSuccess(false);
+        $error['error'] = $msg;
+        $response->setData($error);
+        $response->send();
+        exit;
+    }
+}
+
+function isNameExist($models, $name)
+{
+    $query = $models->checkName();
+    $count = $query->rowCount();
+    checkExistence($count, "{$name} already exists.");
+}
+
+function compareName($models, $name_old, $name)
+{
+    if (strtolower($name_old) != strtolower($name)) {
+        isNameExist($models, $name);
+    }
+}
+
+// 3rd step Validation
+function isEmailExist($models, $email)
+{
+    $query = $models->checkEmail();
+    $count = $query->rowCount();
+    checkExistence($count, "{$email} already exist");
+}
+
+// Validation after this go to update
+function compareEmail($models, $email_old, $email)
+{
+    if (strtolower($email_old) != strtolower($email)) {
+        isEmailExist($models, $email);
+    }
+}
+
+// HEADER
+function isHeaderExist($models, $header)
+{
+    $query = $models->checkHeader();
+    $count = $query->rowCount();
+    checkExistence($count, "{$header} already exist");
+}
+
+// Validation after this go to update
+function compareHeader($models, $header_old, $header)
+{
+    if (strtolower($header_old) != strtolower($header)) {
+        isHeaderExist($models, $header);
+    }
 }
 
 // $conn = null;

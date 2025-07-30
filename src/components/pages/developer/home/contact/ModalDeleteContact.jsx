@@ -1,16 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { queryData } from "../../../../custom-hooks/queryData";
 import { MdDelete } from "react-icons/md";
 import { GrFormClose } from "react-icons/gr";
+import { queryData } from "../../../../custom-hooks/queryData";
 
-const ModalDeleteContact = ({
-  setIsModalDelete,
-  mySqlEndpoint,
-  queryKey,
-  currentSlide,
-  setCurrentSlide,
-}) => {
+const ModalDeleteContact = ({ setIsModalDelete, mySqlEndpoint, queryKey }) => {
   const handleClose = () => {
     setIsModalDelete(false);
   };
@@ -31,7 +25,7 @@ const ModalDeleteContact = ({
   });
 
   const handleConfirm = () => {
-    setCurrentSlide(currentSlide - 1);
+    // setCurrentSlide(currentSlide - 1); // Move to next slide if needed
     mutation.mutate();
   };
 

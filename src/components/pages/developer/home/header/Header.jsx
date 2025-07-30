@@ -19,6 +19,7 @@ const Header = () => {
     "get",
     "header"
   );
+  console.log(dataHeader)
 
   const handleAdd = () => {
     setItemEdit(null);

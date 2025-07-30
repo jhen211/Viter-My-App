@@ -19,5 +19,8 @@ $contact->contact_message = $data['contact_message'];
 $contact->contact_created = date('Y-m-d H:i:s'); // 2025-07-23 08:16:23
 $contact->contact_updated = date('Y-m-d H:i:s');
 
+// 1st step VALIDATIONS
+isEmailExist($contact, $contact->contact_email);
+
 $query = checkCreate($contact);
 returnSuccess($contact, 'contact create', $query);

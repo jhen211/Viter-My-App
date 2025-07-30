@@ -2,8 +2,12 @@ import React from "react";
 import { FaList, FaPlus, FaTable } from "react-icons/fa";
 import { apiVersion } from "../../../../helpers/function-general";
 import ModalDeleteContact from "./ModalDeleteContact";
-import ModalAddContact from "./ModalAddContact";
+import ModalAddContact from "./ModalEditContact";
+
+import ContactList from "./ContactList";
+import ContactTable from "./ContactTable";
 import useQueryData from "../../../../custom-hooks/useQueryData";
+import ModalEditContact from "./ModalEditContact";
 
 const Contact = () => {
   const [isModalContact, setIsModalContact] = React.useState(false);
@@ -11,7 +15,12 @@ const Contact = () => {
   const [itemEdit, setItemEdit] = React.useState();
   const [isTable, setIsTable] = React.useState(false);
 
-  const { isLoading, isFetching, error } = useQueryData(
+  const {
+    isLoading,
+    isFetching,
+    error,
+    data: dataContact,
+  } = useQueryData(
     `${apiVersion}/controllers/developer/contact/contact.php`,
     "get",
     "contact"
@@ -23,7 +32,6 @@ const Contact = () => {
 
   const handleAdd = () => {
     setItemEdit(null);
-    setIsModalContact(true);
   };
 
   const handleEdit = (item) => {
@@ -139,12 +147,12 @@ const Contact = () => {
                 </li>
               </ul>
             </div>
-            <form className="contact bg-gray-50 rounded-xl p-8 h-fit md:w-1/2">
+            <div className="contact bg-gray-50 rounded-xl p-8 h-fit md:w-1/2">
               <div className="flex justify-end right-0 top-1/3">
                 <div className="flex items-center gap-x-3">
                   {/* UI */}
-                  <button
-                    className="flex items-center gap-2 hover:underline hover:text-primary"
+                  <div
+                    className="flex items-center gap-2 hover:underline hover:text-primary mb-3 cursor-pointer"
                     type="button"
                     onClick={handleToggleTable} //step 2 in update
                   >
@@ -157,26 +165,41 @@ const Contact = () => {
                       <>
                         <FaTable className="size-3" />
                         Table
-                        <button
-                          className="flex items-center gap-2 hover:underline hover:text-primary"
-                          type="button"
-                          onClick={handleEdit} //step 2 in update
-                        >
-                          <FaPlus className="size-3" />
-                          Edit
-                        </button>
                       </>
                     )}
-                  </button>
+                  </div>
                   <button
-                    className="flex items-center gap-2 hover:underline hover:text-primary"
+                    className="flex items-center gap-2 hover:underline hover:text-primary "
                     type="button"
                     onClick={handleEdit} //step 2 in update
                   ></button>
                 </div>
               </div>
 
-              <div className="relative">
+              {/* Forms */}
+              {isTable == true ? (
+                <ContactTable
+                  isLoading={isLoading}
+                  isFetching={isFetching}
+                  error={error}
+                  dataContact={dataContact}
+                  handleAdd={handleAdd}
+                  handleEdit={handleEdit}
+                  handleDelete={handleDelete}
+                />
+              ) : (
+                <ContactList
+                  isLoading={isLoading}
+                  isFetching={isFetching}
+                  error={error}
+                  dataContact={dataContact}
+                  itemEdit={itemEdit}
+                  handleAdd={handleAdd}
+                  handleEdit={handleEdit}
+                  handleDelete={handleDelete}
+                />
+              )}
+              {/* <div className="relative">
                 <label>Full Name</label>
                 <input type="text" />
               </div>
@@ -188,18 +211,18 @@ const Contact = () => {
                 <label className="top-0">Message</label>
                 <textarea rows="4"></textarea>
               </div>
-              <button className="btn btn--blue">Send Message</button>
-            </form>
+              <button className="btn btn--blue">Send Message</button> */}
+            </div>
           </div>
         </div>
       </section>
 
       {isModalContact && (
-        <ModalAddContact setIsModal={setIsModalContact} itemEdit={itemEdit} />
+        <ModalEditContact setIsModal={setIsModalContact} itemEdit={itemEdit} />
       )}
       {isDeleteContact && (
         <ModalDeleteContact
-          setModalDelete={setIsDeleteContact}
+          setIsModalDelete={setIsDeleteContact}
           mySqlEndpoint={`${apiVersion}/controllers/developer/contact/contact.php?id=${itemEdit.contact_aid}`}
           queryKey="contact"
         />

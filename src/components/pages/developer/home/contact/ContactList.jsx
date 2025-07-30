@@ -1,71 +1,102 @@
+import { Form, Formik } from "formik";
 import React from "react";
-import { FaPencil } from "react-icons/fa6";
-import { FaTrash } from "react-icons/fa";
-import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
+import * as Yup from "yup";
+import { InputText, InputTextArea } from "../../../../helpers/FormInputs";
+import { apiVersion } from "../../../../helpers/function-general";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryData } from "../../../../custom-hooks/queryData";
 
 const ContactList = ({
   isLoading,
   isFetching,
   error,
   dataContact,
+  itemEdit,
   handleAdd,
-  handleEdit,
   handleDelete,
+  handleEdit,
 }) => {
-  const prevContactCountRef = React.useRef(0);
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (values) =>
+      queryData(
+        `${apiVersion}/controllers/developer/contact/contact.php`,
 
-  React.useEffect(() => {
-    const contactCount = dataContacts?.data?.length ?? 0;
-    const prevContactCount = prevContactCountRef.current;
+        "post", // CREATE
+        values
+      ),
+    onSuccess: (data) => {
+      // validate reading
+      queryClient.invalidateQueries({ queryKey: ["contact"] }); // give id for refetching data.
 
-    if (contactCount === 0) {
-      setCurrentSlide(0);
-    } else if (currentSlide >= contactCount) {
-      setCurrentSlide(contactCount - 1); // Adjust if current slide is out of bounds
-    } else if (contactCount > prevContactCount) {
-      setCurrentSlide(contactCount - 1);
-    }
+      if (data.success) {
+        alert("Successfully edited.");
+      } else {
+        alert(data.error);
+      }
+    },
+  });
 
-    prevContactCountRef.current = contactCount;
-  }, [dataContacts?.data]); // Only re-run when dataContacts.data changes
+  const initVal = {
+    contact_fullname: "",
+    contact_email: "",
+    contact_message: "",
+  };
+
+  const yupSchema = Yup.object({
+    contact_fullname: Yup.string().required("required"),
+    contact_email: Yup.string()
+      .email("Must put a valid email")
+      .required("required"),
+    contact_message: Yup.string().required("required"),
+  });
+
   return (
     <>
-      {/* Navigation Arrows */}
-      <button
-        onClick={() =>
-          setCurrentSlide((prev) =>
-            prev === 0 ? dataContact.count - 1 : prev - 1
-          )
-        }
-        className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+      <Formik
+        initialValues={initVal}
+        validationSchema={yupSchema}
+        onSubmit={async (values, { setSubmitting, resetForm }) => {
+          console.log(values);
+          mutation.mutate(values);
+          resetForm();
+        }}
       >
-        <HiOutlineChevronLeft className="w-6 h-6 text-gray-600" />
-      </button>
-      <button
-        onClick={() =>
-          setCurrentSlide((prev) =>
-            prev === dataContact.count - 1 ? 0 : prev + 1
-          )
-        }
-        className="absolute right-0 top-1/2 -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
-      >
-        <HiOutlineChevronRight className="w-6 h-6 text-gray-600" />
-      </button>
-
-      {/* Dots Indicator */}
-      <div className="flex justify-center mt-6 space-x-2">
-        {dataContact?.data.map((item, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full ${
-              currentSlide === index ? "bg-blue-600" : "bg-gray-300"
-            }`}
-          />
-        ))}
-      </div>
+        {(props) => {
+          return (
+            <Form>
+              {/* Forms */}
+              <div className="relative mb-6 border-2 border-gray rounded-lg">
+                <InputText
+                  label="Full Name"
+                  name="contact_fullname"
+                  type="text"
+                />
+              </div>
+              <div className="relative mb-6 border-2 border-gray rounded-lg">
+                <InputText label="Email" name="contact_email" type="text" />
+              </div>
+              <div className="relative mb-6 border-2 border-gray rounded-lg ">
+                <InputTextArea
+                  className="resize-none"
+                  label="Message"
+                  name="contact_message"
+                  type="text"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={mutation.isPending}
+                className="btn btn--blue"
+              >
+                Send Message
+              </button>
+            </Form>
+          );
+        }}
+      </Formik>
     </>
   );
 };
 
-export default ServicesList;
+export default ContactList;

@@ -35,6 +35,21 @@ class Header
         return $query;
     }
 
+    public function checkName()
+    {
+        try {
+            $sql = "select header_name from {$this->tblHeader} ";
+            $sql .= "where header_name = :header_name ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "header_name" => $this->header_name
+            ]);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
+
 
     // creating a data using this function
     public function create()

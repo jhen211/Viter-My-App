@@ -1,5 +1,4 @@
 import React from "react";
-import ModalWrapper from "../../../../partials/modal/ModalWrapper";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryData } from "../../../../custom-hooks/queryData";
 import { apiVersion } from "../../../../helpers/function-general";
@@ -7,8 +6,9 @@ import { FaTimes } from "react-icons/fa";
 import { Form, Formik } from "formik";
 import { InputText, InputTextArea } from "../../../../helpers/FormInputs";
 import * as Yup from "yup";
+import ModalWrapper from "../../../../partials/modal/ModalWrapper";
 
-const ModalAddContact = ({ setIsModal, itemEdit }) => {
+const ModalEditContact = ({ setIsModal, itemEdit }) => {
   const [animate, setAnimate] = React.useState("translate-x-full");
   const queryClient = useQueryClient();
 
@@ -17,7 +17,7 @@ const ModalAddContact = ({ setIsModal, itemEdit }) => {
       queryData(
         itemEdit
           ? `${apiVersion}/controllers/developer/contact/contact.php?id=${itemEdit.contact_aid}`
-          : `${apiVersion}/controllers/developer/contact/contact.php`,
+          : `${apiVersion}` / controllers / developer / contact / contact.php,
         itemEdit
           ? "put" //UPDATE
           : "post", //CREATE
@@ -30,9 +30,7 @@ const ModalAddContact = ({ setIsModal, itemEdit }) => {
       if (!data.success) {
         window.prompt(data.error);
       } else {
-        window.prompt(
-          itemEdit ? `Successfully edited.` : `Successfully created.`
-        );
+        alert(`Successfully edited.`);
         setIsModal(false);
       }
     },
@@ -47,9 +45,11 @@ const ModalAddContact = ({ setIsModal, itemEdit }) => {
   };
 
   const initVal = {
-    contact_fullname: itemEdit ? itemEdit.contact_name : "",
+    contact_fullname: itemEdit ? itemEdit.contact_fullname : "",
     contact_email: itemEdit ? itemEdit.contact_email : "",
-    contact_message: itemEdit ? itemEdit.contact_image : "",
+    contact_message: itemEdit ? itemEdit.contact_message : "",
+
+    contact_email_old: itemEdit ? itemEdit.contact_email : "",
   };
 
   const yupSchema = Yup.object({
@@ -64,7 +64,7 @@ const ModalAddContact = ({ setIsModal, itemEdit }) => {
   return (
     <ModalWrapper className={`${animate}`} handleClose={handleClose}>
       <div className="modal_header relative mb-4">
-        <h3 className="text-sm">{itemEdit ? "Edit" : "Add"} Contact</h3>
+        <h3 className="text-sm"> Edit Contact</h3>
         <button
           type="button"
           className="absolute top-0.5 right-0"
@@ -95,7 +95,7 @@ const ModalAddContact = ({ setIsModal, itemEdit }) => {
                     />
                   </div>
                   <div className="relative mt-3">
-                    <InputTextArea
+                    <InputText
                       label="Email"
                       name="contact_email"
                       type="text"
@@ -103,7 +103,7 @@ const ModalAddContact = ({ setIsModal, itemEdit }) => {
                     />
                   </div>
                   <div className="relative mt-3">
-                    <InputText
+                    <InputTextArea
                       label="Message"
                       name="contact_message"
                       type="text"
@@ -137,4 +137,4 @@ const ModalAddContact = ({ setIsModal, itemEdit }) => {
   );
 };
 
-export default ModalAddContact;
+export default ModalEditContact;
