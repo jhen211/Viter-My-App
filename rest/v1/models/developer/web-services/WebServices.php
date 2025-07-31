@@ -12,6 +12,9 @@ class WebServices
     public $web_services_created;
     public $web_services_updated;
 
+    public $web_services_start;
+    public $web_services_total;
+
     public  $connection;
     public $lastInsertedId;
 
@@ -30,7 +33,32 @@ class WebServices
             $sql .= "* ";
             $sql .= "from ";
             $sql .= "{$this->tblWebServices} ";
+            $sql .= "order by ";
+            $sql .= "web_services_name ";
             $query = $this->connection->query($sql);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
+
+    // Loading - Step 5  (AFTER FUNCTIONS. JUST COPY THE READ ALL CODE HERE)
+    public function readLimit()
+    {
+        try {
+            $sql = "select ";
+            $sql .= "* ";
+            $sql .= "from ";
+            $sql .= "{$this->tblWebServices} ";
+            $sql .= "order by ";
+            $sql .= "web_services_name ";
+            $sql .= "limit :start, ";
+            $sql .= ":total";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "start"=> $this->web_services_start - 1,
+                "total"=> $this->web_services_total,
+            ]);
         } catch (PDOException $ex) {
             $query = false;
         }
@@ -109,7 +137,7 @@ class WebServices
     {
         try {
             $sql = "delete from {$this->tblWebServices} ";
-            $sql .= "where web_services_aid = :web_services_aid";
+            $sql .= "where web_services_aid = :web_services_aid ";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "web_services_aid" => $this->web_services_aid
@@ -119,13 +147,12 @@ class WebServices
         }
         return $query;
     }
-    
-    // step
+
     public function checkName()
     {
         try {
             $sql = "select web_services_name from {$this->tblWebServices} ";
-            $sql .= "where web_services_name = :web_services_name ";
+            $sql .= "where web_services_name = :web_services_name";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "web_services_name" => $this->web_services_name

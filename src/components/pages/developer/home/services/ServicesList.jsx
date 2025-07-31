@@ -3,18 +3,31 @@ import CardServices from "../../../../partials/CardServices";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 
+import TableLoading from "../../../../partials/spinners/TableLoading";
+import NoData from "../../../../partials/NoData";
+import ServerError from "../../../../partials/ServerError";
+import FetchingSpinner from "../../../../partials/spinners/FetchingSpinner";
+import Loadmore from "../../../../partials/Loadmore";
+
 const ServicesList = ({
-  isLoading,
-  isFetching,
-  error,
   dataServices,
   handleAdd,
   handleEdit,
   handleDelete,
+  result,
+  error,
+  fetchNextPage,
+  hasNextPage,
+  isFetching,
+  isFetchingNextPage,
+  status,
+  setPage,
+  page,
+  ref,
 }) => {
   return (
     <>
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
+      {/* <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
         {dataServices?.data.map((item, key) => {
           return (
             <div key={key} className="relative">
@@ -40,38 +53,79 @@ const ServicesList = ({
             </div>
           );
         })}
+      </div> */}
+      <div className="relative">
+        {isFetching && status != "pending" && <FetchingSpinner />}
+        <div className="min-h-[25.5rem] min-x-full overflow-x-auto flex flex-row items-center gap-10">
+          {(status == "pending" || result?.pages[0].data.length == 0) && (
+            <div className="text-center w-full">
+              {status == "pending" ? <TableLoading /> : <NoData />}
+            </div>
+          )}
+          {error && (
+            <div className="text-center w-full">
+              <ServerError />
+            </div>
+          )}
+          {result?.pages.map((page, key) => (
+            <React.Fragment key={key}>
+              {page?.data.map((item, key) => {
+                return (
+                  <div key={key} className="relative">
+                    <div className="bg-gray-200 min-h-80 min-w-96 rounded-md relative ">
+                      <div className="p-5 flex flex-col items-center gap-3">
+                        {/* IMAGE CONTAINER */}
+                        <div className="min-w-20 min-h-20">
+                          <img
+                            src={item.web_services_image}
+                            alt={item.web_services_image}
+                          />
+                        </div>
+                        <div className="">
+                          <h4>{item.web_services_name}</h4>
+                          <p>{item.web_services_description}</p>
+                        </div>
+                      </div>
+                    </div>
+                    {/* ACTIONS */}
+                    <div className="absolute -top-5 right-3 z-10">
+                      <div className="flex items-center justify-end gap-x-3 mr-5">
+                        <button // 1ST STEP
+                          type="button"
+                          data-tooltip="Edit"
+                          className="tooltip"
+                          onClick={() => handleEdit(item)}
+                        >
+                          <FaPencil className="size-4" />
+                        </button>
+                        <button // 1ST STEP
+                          type="button"
+                          data-tooltip="Delete"
+                          className="tooltip"
+                          onClick={() => handleDelete(item)}
+                        >
+                          <FaTrash className="size-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </React.Fragment>
+          ))}
 
-        {/* 1st card */}
-        {/* <CardServices
-              image={"../images/card-icon-web-development.webp"}
-              alt={"Web Development Image"}
-              title={"Web Development"}
-              description={
-                " Custom websites built with modern frameworks like Next.js and  React for optimal performance."
-              }
-              btn={"View Packages"}
-            /> */}
-        {/* 2nd card */}
-        {/* <CardServices
-              image={"../images/card-icon-ui-ux-design.webp"}
-              alt={"UI/UX Design Image"}
-              title={"UI/UX Design"}
-              description={
-                "Beautiful interfaces designed to convert visitors with strategic  user experience flows."
-              }
-              btn={"See Portfolio"}
-            /> */}
-
-        {/* 3rd card */}
-        {/* <CardServices
-              image={"../images/card-icon-seo-optimization.webp"}
-              alt={"SEO Optimization Image"}
-              title={"SEO Optimization"}
-              description={
-                "Increase your visibility on search engines with our data-driven SEO strategies."
-              }
-              btn={"Get Audit"}
-            /> */}
+          <div>
+            <Loadmore
+              fetchNextPage={fetchNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              hasNextPage={hasNextPage}
+              result={result?.pages[0]}
+              setPage={setPage}
+              page={page}
+              refView={ref}
+            />
+          </div>
+        </div>
       </div>
     </>
   );

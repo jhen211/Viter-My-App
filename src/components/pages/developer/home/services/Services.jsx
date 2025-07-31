@@ -9,6 +9,9 @@ import ModalDeleteServices from "./ModalDeleteServices";
 import ServicesList from "./ServicesList";
 import ServiceListTable from "./ServicesTable";
 import ServicesTable from "./ServicesTable";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { queryDataInfinite } from "../../../../custom-hooks/queryDataInfinite";
+import { useInView } from "react-intersection-observer";
 
 const Services = () => {
   const [isModalServices, setIsModalServices] = React.useState(false);
@@ -16,16 +19,54 @@ const Services = () => {
   const [itemEdit, setItemEdit] = React.useState();
   const [isTable, setIsTable] = React.useState(false);
 
+  const [page, setPage] = React.useState(1);
+  const [ref, InView] = useInView();
+
+  // const {
+  //   isLoading,
+  //   isFetching: isFetchDataServices,
+  //   error: errorDataServices,
+  //   data: dataServices,
+  // } = useQueryData(
+  //   `${apiVersion}/controllers/developer/web-services/web-services.php`, // endpoint
+  //   "get", // post
+  //   "web-services" // query key
+  // );
+  //  next step after custom hooks ()
   const {
-    isLoading,
-    isFetching,
+    data: result,
     error,
-    data: dataServices,
-  } = useQueryData(
-    `${apiVersion}/controllers/developer/web-services/web-services.php`, // endpoint
-    "get", // post
-    "web-services" // query key
-  );
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ["web-services"],
+    queryFn: async ({ pageParam = 1 }) =>
+      await queryDataInfinite(
+        ``, // search functionalities
+        `${apiVersion}/controllers/developer/web-services/page.php?start=${pageParam}`, // load more or pagination functionalities
+        false,
+        {},
+        "post"
+      ),
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page < lastPage.total) {
+        return lastPage.page + lastPage.count;
+      }
+      return;
+    },
+  });
+
+  React.useEffect(() => {
+    if (InView) {
+      fetchNextPage();
+      setPage((prev) => prev + 1);
+    }
+  }, [InView]);
+
+  // next step
 
   const handleToggleTable = () => {
     setIsTable(!isTable);
@@ -93,24 +134,34 @@ const Services = () => {
           {isTable == true ? (
             <>
               <ServicesTable
-                isLoading={isLoading}
-                isFetching={isFetching}
-                error={error}
-                dataServices={dataServices}
                 handleAdd={handleAdd}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
+                result={result}
+                error={error}
+                fetchNextPage={fetchNextPage}
+                hasNextPage={hasNextPage}
+                isFetching={isFetching}
+                isFetchingNextPage={isFetchingNextPage}
+                status={status}
+                setPage={setPage}
+                page={page}
+                ref={ref}
               />
             </>
           ) : (
             <ServicesList
-              isLoading={isLoading}
-              isFetching={isFetching}
-              error={error}
-              dataServices={dataServices}
               handleAdd={handleAdd}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
+              // next step (add the 5 then copy paste it in services table)
+              result={result}
+              error={error}
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage}
+              isFetching={isFetching}
+              isFetchingNextPage={isFetchingNextPage}
+              status={status}
             />
           )}
         </div>
